@@ -1,0 +1,2 @@
+kubectl get pxc-backups
+

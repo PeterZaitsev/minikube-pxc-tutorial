@@ -1,0 +1,40 @@
+apiVersion: pxc.percona.com/v1-11-0
+kind: PerconaXtraDBCluster
+metadata:
+  name: minimal-cluster
+  finalizers:
+    - delete-pxc-pods-in-order
+    - delete-pxc-pvc
+spec:
+  crVersion: 1.11.0
+  secretsName: minimal-cluster-secrets
+  allowUnsafeConfigurations: true
+  upgradeOptions:
+    apply: 8.0-recommended
+    schedule: "0 4 * * *"
+  pxc:
+    size: 3
+    image: percona/percona-xtradb-cluster:8.0.27-18.1
+    resources:
+      requests:
+        memory: 1G
+        cpu: 200m
+      limits:
+        memory: 1G
+        cpu: 500m
+    affinity:
+      antiAffinityTopologyKey: "none"
+    volumeSpec:
+      persistentVolumeClaim:
+        resources:
+          requests:
+            storage: 6G
+  haproxy:
+    enabled: true
+    size: 1
+    image: percona/percona-xtradb-cluster-operator:1.11.0-haproxy
+    affinity:
+      antiAffinityTopologyKey: "none"
+  logcollector:
+    enabled: true
+    image: percona/percona-xtradb-cluster-operator:1.11.0-logcollector
