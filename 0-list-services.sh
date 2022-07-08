@@ -1,1 +1,0 @@
-minikube service list
